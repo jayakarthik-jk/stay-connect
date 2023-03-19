@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useEffect } from "react";
 
 import { colors } from "../../Util";
+import Text from "../Common/Text";
 import useDynamicColors from "../../Hooks/useDynamicColors";
 
 function ContactListElement({ name, number }) {
@@ -12,7 +13,7 @@ function ContactListElement({ name, number }) {
   return (
     <View style={[styles.container, background]}>
       <View>
-        <Text style={[styles.name, font]}>{name}</Text>
+        <Text style={styles.name}>{name}</Text>
         <Text style={styles.number}>{number}</Text>
       </View>
     </View>

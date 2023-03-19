@@ -1,4 +1,5 @@
-import { Text } from "react-native";
+import {} from "react-native";
+import Text from "../Common/Text";
 
 function SettingsScreen() {
   return <Text>Settings Screen</Text>;

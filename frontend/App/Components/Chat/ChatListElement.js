@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import useDynamicColors from "../../Hooks/useDynamicColors";
 
@@ -6,11 +6,12 @@ import { colors } from "../../Util";
 
 import Touchable from "../Common/Touchable";
 import SvgImage from "../Common/SvgImage";
+import Text from "../Common/Text";
 import Labels from "../../Navigation/Labels";
 
 function ChatListElement({ username, message, profile, unread, count, id }) {
   const navigation = useNavigation();
-  const { background, font } = useDynamicColors();
+  const { background } = useDynamicColors();
   return (
     <Touchable
       onPress={() => navigation.navigate(Labels.CHAT_SCREEN, { id, username })}
@@ -25,8 +26,8 @@ function ChatListElement({ username, message, profile, unread, count, id }) {
             </View>
           )}
           <View style={styles.messageContainer}>
-            <Text style={[styles.name, font]}>{username}</Text>
-            <Text style={[styles.message, font]}>{message}</Text>
+            <Text style={styles.name}>{username}</Text>
+            <Text style={styles.message}>{message}</Text>
           </View>
         </View>
         {unread && (

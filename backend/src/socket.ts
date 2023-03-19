@@ -6,6 +6,7 @@ function initSocket(httpServer: any) {
 
   io.on("connection", async (socket) => {
     const email = socket.handshake.query.email as string;
+    console.log(email);
     let user = await db.getUser(email);
     if (!user) user = await db.createUser(email);
     socket.join(user.id);
@@ -34,7 +35,7 @@ function initSocket(httpServer: any) {
     socket.on("add-friend", async (email: string) => {
       const friend = await db.getUser(email);
       if (!friend || !user) return;
-      const request = await db.sendFriendRequest(user.id, friend.id);
+      const request = await db.sendFriendRequest(user, friend);
       if (request instanceof Error) return;
       socket.to(friend.id).emit("friend-request", { email: user.email });
     });

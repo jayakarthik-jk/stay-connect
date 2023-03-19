@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import useDynamicColors from "../../Hooks/useDynamicColors";
+import Text from "../Common/Text";
 
 function PostSection() {
   const { background } = useDynamicColors();

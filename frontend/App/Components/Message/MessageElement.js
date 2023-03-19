@@ -1,7 +1,8 @@
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import useDynamicColors from "../../Hooks/useDynamicColors";
+
 import { colors } from "../../Util";
+import Text from "../Common/Text";
 
 function MessageElement({
   message,
@@ -18,7 +19,6 @@ function MessageElement({
   } else {
     icon = "checkmark-done-sharp";
   }
-  const { font } = useDynamicColors();
   return (
     <View style={styles.container}>
       <View
@@ -43,7 +43,7 @@ function MessageElement({
             sameUser && (send ? styles.mr : styles.ml),
           ]}
         >
-          <Text style={[styles.text, font]}>{message}</Text>
+          <Text style={styles.text}>{message}</Text>
           <Text style={styles.messageTime}>
             {time}
             {send && <Ionicons name={icon} size={16} color={colors.grey} />}
@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
     flexDirection: "row-reverse",
   },
   text: {
-    color: colors.black,
     fontSize: 16,
     paddingHorizontal: 10,
   },

@@ -6,12 +6,14 @@ import { colors } from "../../Util";
 import Button from "../Common/Button";
 
 function LoginScreen() {
-  const [username, setUsername] = useState("");
-  const [number, setNumber] = useState("");
-  const { user, setUser } = useUser();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { setUser } = useUser();
   const { background, font } = useDynamicColors();
   const handleLogin = () => {
-    setUser({ username, number });
+    // validate Input
+
+    setUser({ email, password });
   };
   return (
     <View style={[styles.container, background]}>
@@ -23,15 +25,15 @@ function LoginScreen() {
       <TextInput
         placeholder="Username"
         placeholderTextColor={font.color}
-        value={username}
-        onChangeText={setUsername}
+        value={email}
+        onChangeText={setEmail}
         style={styles.input}
       />
       <TextInput
         placeholderTextColor={font.color}
-        placeholder="Mobile Number"
-        value={number}
-        onChangeText={setNumber}
+        placeholder="Password"
+        value={password}
+        onChangeText={setPassword}
         style={styles.input}
       />
       <Button onPress={handleLogin}>Login</Button>

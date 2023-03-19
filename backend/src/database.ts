@@ -29,32 +29,19 @@ async function createUser(email: string) {
   return user;
 }
 
-async function sendFriendRequest(userId: string, friendId: string) {
+async function sendFriendRequest(user: User, friend: User) {
   return await getPrismaClient().$transaction(async (prisma) => {
-    const user = await prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-    });
-    if (!user) return new Error("User not found");
-
-    const friend = await prisma.user.findUnique({
-      where: {
-        id: friendId,
-      },
-    });
-    if (!friend) return new Error("Friend not found");
-
+    // create a request onject in the database
     const request = await prisma.request.create({
       data: {
         senderId: user.id,
         receiverId: friend.id,
       },
     });
-
+    // update the user objects in the database
     await prisma.user.update({
       where: {
-        id: userId,
+        id: user.id,
       },
       data: {
         outgoingRequests: {
@@ -64,9 +51,10 @@ async function sendFriendRequest(userId: string, friendId: string) {
         },
       },
     });
+    // update the friend object in the database
     await prisma.user.update({
       where: {
-        id: friendId,
+        id: friend.id,
       },
       data: {
         incomingRequests: {
@@ -82,6 +70,7 @@ async function sendFriendRequest(userId: string, friendId: string) {
 
 async function acceptFriendRequest(user: User, friend: User) {
   return await getPrismaClient().$transaction(async (prisma) => {
+    // check if the request exists
     const requests = await prisma.request.findMany({
       where: {
         senderId: friend.id,
@@ -90,7 +79,7 @@ async function acceptFriendRequest(user: User, friend: User) {
     });
     const request = requests[0];
     if (!request) return new Error("Request not found");
-
+    // update the user objects in the database
     const updatedUser = await prisma.user.update({
       where: {
         id: user.id,
@@ -101,6 +90,7 @@ async function acceptFriendRequest(user: User, friend: User) {
         },
       },
     });
+    // update the friend object in the database
     await prisma.user.update({
       where: {
         id: friend.id,
@@ -125,6 +115,7 @@ async function acceptFriendRequest(user: User, friend: User) {
 
 async function rejectFriendRequest(user: User, friend: User) {
   return await getPrismaClient().$transaction(async (prisma) => {
+    // check if the request exists
     const requests = await prisma.request.findMany({
       where: {
         senderId: friend.id,
@@ -133,7 +124,7 @@ async function rejectFriendRequest(user: User, friend: User) {
     });
     const request = requests[0];
     if (!request) return new Error("Request not found");
-
+    // update the user objects in the database
     const updatedUser = await prisma.user.update({
       where: {
         id: user.id,
@@ -146,7 +137,7 @@ async function rejectFriendRequest(user: User, friend: User) {
         },
       },
     });
-
+    // update the friend object in the database
     await prisma.request.update({
       where: {
         id: request.id,
@@ -168,6 +159,7 @@ async function sendMessage(sender: User, receipient: User, text: string) {
     sender.id > receipient.id
       ? `${sender.id}-${receipient.id}`
       : `${receipient.id}-${sender.id}`;
+  // check if the conversation exists
   let conversation = await getPrismaClient().conversation.findUnique({
     where: {
       conversationId,
@@ -177,6 +169,7 @@ async function sendMessage(sender: User, receipient: User, text: string) {
     },
   });
   if (!conversation) {
+    // create a conversation object in the database
     conversation = await getPrismaClient().conversation.create({
       data: {
         conversationId,
@@ -193,6 +186,7 @@ async function sendMessage(sender: User, receipient: User, text: string) {
       },
     });
   } else {
+    // update the conversation object in the database
     conversation = await getPrismaClient().conversation.update({
       where: {
         conversationId,
@@ -219,6 +213,8 @@ async function updateMessageStatus(sender: User, receipient: User) {
     sender.id > receipient.id
       ? `${sender.id}-${receipient.id}`
       : `${receipient.id}-${sender.id}`;
+
+  // check if the conversation exists
   const conversation = await getPrismaClient().conversation.findUnique({
     where: {
       conversationId,
@@ -228,12 +224,12 @@ async function updateMessageStatus(sender: User, receipient: User) {
     },
   });
   if (!conversation) return new Error("Conversation not found");
-
+  //  filter the messages that are sent by the receipient
   const messages = conversation.messages.filter(
     (message) => message.senderId === receipient.id
   );
   if (!messages || messages.length < 0) return new Error("No messages found");
-
+  // update the messages in the database
   const updatedMessages = await getPrismaClient().message.updateMany({
     where: {
       id: {

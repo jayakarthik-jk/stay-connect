@@ -1,17 +1,12 @@
-import {
-  Text,
-  View,
-  StyleSheet,
-  ImageBackground,
-  TextInput,
-} from "react-native";
+import { View, StyleSheet, ImageBackground, TextInput } from "react-native";
 import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 
 import { colors, genId, getTime } from "../../Util";
 import Touchable from "../Common/Touchable";
-import MessageElement from "../Message/MessageElement";
 import List from "../Common/List";
+import Text from "../Common/Text";
+import MessageElement from "../Message/MessageElement";
 
 const data = [
   {
@@ -80,8 +75,8 @@ function ChatScreen() {
         />
         <Touchable noFeedback onPress={handleSend}>
           <View style={styles.btnContainer}>
-            <Text style={styles.btnLogo}>
-              <Ionicons name="send" size={25} color={colors.white} />
+            <Text>
+              <Ionicons name="send" size={25} />
             </Text>
           </View>
         </Touchable>
@@ -109,9 +104,6 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     margin: 10,
-  },
-  btnLogo: {
-    color: colors.white,
   },
   input: {
     position: "absolute",

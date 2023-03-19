@@ -1,15 +1,16 @@
 import { AppThemeContextProvider } from "./AppTheme";
 import { RouteContextProvider } from "./Route";
+import { SocketContextProvider } from "./Socket";
 import { UserContextProvider } from "./User";
 
 const Context = ({ children }) => {
   return (
     <UserContextProvider>
-      <AppThemeContextProvider>
-        <RouteContextProvider>
-          {children}
-        </RouteContextProvider>
-      </AppThemeContextProvider>
+      <SocketContextProvider>
+        <AppThemeContextProvider>
+          <RouteContextProvider>{children}</RouteContextProvider>
+        </AppThemeContextProvider>
+      </SocketContextProvider>
     </UserContextProvider>
   );
 };

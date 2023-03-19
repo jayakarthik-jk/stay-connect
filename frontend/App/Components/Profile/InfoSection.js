@@ -1,26 +1,26 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { colors } from "../../Util";
 import useDynamicColors from "../../Hooks/useDynamicColors";
 import { useUser } from "../../Context/User";
+import Text from "../Common/Text";
 
 function InfoSection({ postCount, viewsCount }) {
-  const { background, font } = useDynamicColors();
-  const { username, number } = useUser();
+  const { background } = useDynamicColors();
+  const { user } = useUser();
 
   return (
     <View style={styles.infoSection}>
       <View style={styles.infoContainer}>
-        <Text style={[styles.infoname, font]}>{username}</Text>
-        <Text style={styles.infoNumber}>{number}</Text>
+        <Text style={styles.infoname}>{user.email}</Text>
       </View>
       <View style={[styles.statsContainer, background]}>
         <View style={styles.countContainer}>
           <Text style={styles.statsValue}>{postCount}</Text>
-          <Text style={[styles.statsLabel, font]}>Posts</Text>
+          <Text style={styles.statsLabel}>Posts</Text>
         </View>
         <View style={styles.countContainer}>
           <Text style={styles.statsValue}>{viewsCount}</Text>
-          <Text style={[styles.statsLabel, font]}>Views</Text>
+          <Text style={styles.statsLabel}>Views</Text>
         </View>
       </View>
     </View>
@@ -66,7 +66,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   statsLabel: {
-    color: colors.black,
     fontSize: 12,
   },
   statsValue: {

@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet } from "react-native";
 
 import ChatScreenHeader from "../Chat/ChatScreenHeader";
 import ChatListElement from "../Chat/ChatListElement";
 import List from "../Common/List";
+import Text from "../Common/Text";
+
 import useDynamicColors from "../../Hooks/useDynamicColors";
 
 function ChatListScreen() {
@@ -40,7 +42,7 @@ function ChatListScreen() {
     );
   };
 
-  const { background, font } = useDynamicColors();
+  const { background } = useDynamicColors();
 
   return (
     <View style={[styles.main, background]}>
@@ -55,7 +57,7 @@ function ChatListScreen() {
         {filteredChat.length > 0 ? (
           <List data={filteredChat} Component={ChatListElement} />
         ) : (
-          <Text style={font}>No chats found !</Text>
+          <Text>No chats found !</Text>
         )}
       </View>
     </View>

@@ -1,7 +1,9 @@
+import { config } from "dotenv";
+config();
 export default {
   expo: {
-    name: "stay-connected",
-    slug: "stay-connected",
+    name: "stay-connect",
+    slug: "stay-connect",
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/icon.png",

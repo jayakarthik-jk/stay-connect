@@ -7,9 +7,14 @@ UserContext.displayName = "User";
 export const useUser = () => useContext(UserContext);
 
 export const UserContextProvider = ({ children }) => {
-  const [user, setUser] = useState();
+  const [user, setUser] = useState({
+    email: null,
+    password: null,
+  });
   return (
-    <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>
+    <UserContext.Provider value={{ user, setUser }}>
+      {children}
+    </UserContext.Provider>
   );
 };
 

@@ -1,7 +1,8 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import React from "react";
 import Touchable from "./Touchable";
 import { colors } from "../../Util";
+import Text from "./Text";
 
 const Button = ({ children, onPress, style }) => {
   return (

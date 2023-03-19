@@ -1,24 +1,27 @@
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
-import { colors } from "../../Util";
-import Touchable from "../Common/Touchable";
 import { useNavigation } from "@react-navigation/native";
-import useDynamicColors from "../../Hooks/useDynamicColors";
-import SearchBar from "../Common/SearchBar";
+
+import { colors } from "../../Util";
 import Labels from "../../Navigation/Labels";
+import Touchable from "../Common/Touchable";
+import SearchBar from "../Common/SearchBar";
+import Text from "../Common/Text";
+
 function ChatScreenHeader({ onSearch }) {
   const navigation = useNavigation();
-  const { font } = useDynamicColors();
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
-        <Text style={[styles.title, font]}>Messages</Text>
+        <Text style={styles.title}>Messages</Text>
         <Touchable
           opacity
           onPress={() => navigation.navigate(Labels.CONTACTLIST_SCREEN)}
         >
-          <Ionicons name="person-add-sharp" size={24} color={font.color} />
+          <Text>
+            <Ionicons name="person-add-sharp" size={24} />
+          </Text>
         </Touchable>
       </View>
       <SearchBar onSearch={onSearch} />
@@ -45,7 +48,6 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   title: {
-    color: colors.black,
     fontSize: 22,
     fontWeight: "bold",
     paddingVertical: 5,

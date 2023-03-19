@@ -1,9 +1,10 @@
-import { StyleSheet, Text, Image, View } from "react-native";
+import { StyleSheet, Image, View } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import Button from "../Common/Button";
 import { colors } from "../../Util";
 import useDynamicColors from "../../Hooks/useDynamicColors";
+import Text from "../Common/Text";
 
 function GetStartedScreen() {
   const navigation = useNavigation();

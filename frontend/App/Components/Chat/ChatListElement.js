@@ -9,30 +9,43 @@ import SvgImage from "../Common/SvgImage";
 import Text from "../Common/Text";
 import Labels from "../../Navigation/Labels";
 
-function ChatListElement({ username, message, profile, unread, count, id }) {
+function ChatListElement({
+  friendId,
+  friendName,
+  lastMessage,
+  lastMessageBy,
+  friendProfile,
+  unReadCount = 0,
+  conversationId,
+}) {
   const navigation = useNavigation();
   const { background } = useDynamicColors();
   return (
     <Touchable
-      onPress={() => navigation.navigate(Labels.CHAT_SCREEN, { id, username })}
+      onPress={() =>
+        navigation.navigate(Labels.CHAT_SCREEN, {
+          id: conversationId,
+          name: friendName,
+        })
+      }
     >
       <View style={[styles.container, background]}>
         <View style={styles.leftContainer}>
-          {profile ? (
-            <Image source={profile} style={styles.profile} />
+          {friendProfile ? (
+            <Image source={friendProfile} style={styles.profile} />
           ) : (
             <View style={styles.profile}>
-              <SvgImage seed={username} />
+              <SvgImage seed={friendName} />
             </View>
           )}
           <View style={styles.messageContainer}>
-            <Text style={styles.name}>{username}</Text>
-            <Text style={styles.message}>{message}</Text>
+            <Text style={styles.name}>{friendName}</Text>
+            <Text style={styles.message}>{lastMessage}</Text>
           </View>
         </View>
-        {unread && (
+        {(lastMessageBy === friendId) & (unReadCount > 0) && (
           <View style={styles.badge}>
-            <Text style={styles.badgeText}>{count}</Text>
+            <Text style={styles.badgeText}>{unReadCount}</Text>
           </View>
         )}
       </View>

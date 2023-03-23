@@ -29,7 +29,7 @@ function ChatScreenNavigator() {
         name={Labels.CHAT_SCREEN}
         component={ChatScreen}
         options={({ route }) => ({
-          title: route.params.username,
+          title: route.params.name,
           headerStyle: {
             backgroundColor: colors.primary,
           },

@@ -5,6 +5,7 @@ import Button from "../Common/Button";
 import { colors } from "../../Util";
 import useDynamicColors from "../../Hooks/useDynamicColors";
 import Text from "../Common/Text";
+import Labels from "../../Navigation/Labels";
 
 function GetStartedScreen() {
   const navigation = useNavigation();
@@ -18,7 +19,7 @@ function GetStartedScreen() {
         style={styles.backgroundImage}
       />
       <Button
-        onPress={() => navigation.navigate("Login")}
+        onPress={() => navigation.navigate(Labels.REGISTER_SCREEN)}
         style={styles.button}
       >
         Get Started

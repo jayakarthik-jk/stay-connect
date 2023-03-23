@@ -4,6 +4,7 @@ const Labels = {
   PROFILE_TAB: "Profile",
   GETSTARTED_SCREEN: "GetStarted",
   LOGIN_SCREEN: "Login",
+  REGISTER_SCREEN: "Register",
   CHATLIST_SCREEN: "Chat List",
   CONTACTLIST_SCREEN: "Contacts List",
   CHAT_SCREEN: "Chats Screen",

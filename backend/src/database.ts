@@ -1,6 +1,17 @@
-import { Conversation, PrismaClient, User } from "@prisma/client";
+import { Conversation, PrismaClient, Request, User } from "@prisma/client";
+import bcrypt from "bcrypt";
 
 let prisma = new PrismaClient();
+
+export type UserWithoutPassword = Omit<
+  User & {
+    Conversations: Conversation[];
+    incomingRequests: Request[];
+    outgoingRequests: Request[];
+    friendsSet?: Set<string>;
+  },
+  "password"
+>;
 
 function getPrismaClient() {
   if (!prisma) {
@@ -9,27 +20,90 @@ function getPrismaClient() {
   return prisma;
 }
 
+function excludePassword(
+  user: User & {
+    Conversations: Conversation[];
+    incomingRequests: Request[];
+    outgoingRequests: Request[];
+  }
+): UserWithoutPassword {
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    friends: user.friends,
+    profile: user.profile,
+    incomingRequests: user.incomingRequests,
+    outgoingRequests: user.outgoingRequests,
+    Conversations: user.Conversations,
+  };
+}
+
+async function login(email: string, password: string) {
+  const user = await getPrismaClient().user.findUnique({
+    where: {
+      email,
+    },
+    include: {
+      Conversations: true,
+      incomingRequests: true,
+      outgoingRequests: true,
+    },
+  });
+  if (!user) {
+    return new Error("User not found");
+  }
+  const result = await bcrypt.compare(password, user.password);
+  if (!result) {
+    return new Error("Invalid Password");
+  }
+  return excludePassword(user);
+}
+
+async function register(email: string, name: string, password: string) {
+  const user = await getPrismaClient().user.findUnique({
+    where: {
+      email,
+    },
+  });
+  if (user) {
+    return new Error("User already exists");
+  }
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const newUser = await getPrismaClient().user.create({
+    data: {
+      email,
+      name,
+      password: hashedPassword,
+    },
+    include: {
+      Conversations: true,
+      incomingRequests: true,
+      outgoingRequests: true,
+    },
+  });
+  return excludePassword(newUser);
+}
+
 async function getUser(email: string) {
   // Get user from database
   const user = await getPrismaClient().user.findUnique({
     where: {
       email,
     },
-  });
-  return user;
-}
-
-async function createUser(email: string) {
-  // Create user in database
-  const user = await getPrismaClient().user.create({
-    data: {
-      email,
+    include: {
+      Conversations: true,
+      incomingRequests: true,
+      outgoingRequests: true,
     },
   });
-  return user;
+  return user ? excludePassword(user) : null;
 }
 
-async function sendFriendRequest(user: User, friend: User) {
+async function sendFriendRequest(
+  user: UserWithoutPassword,
+  friend: UserWithoutPassword
+) {
   return await getPrismaClient().$transaction(async (prisma) => {
     // create a request onject in the database
     const request = await prisma.request.create({
@@ -68,7 +142,10 @@ async function sendFriendRequest(user: User, friend: User) {
   });
 }
 
-async function acceptFriendRequest(user: User, friend: User) {
+async function acceptFriendRequest(
+  user: UserWithoutPassword,
+  friend: UserWithoutPassword
+) {
   return await getPrismaClient().$transaction(async (prisma) => {
     // check if the request exists
     const requests = await prisma.request.findMany({
@@ -113,7 +190,10 @@ async function acceptFriendRequest(user: User, friend: User) {
   });
 }
 
-async function rejectFriendRequest(user: User, friend: User) {
+async function rejectFriendRequest(
+  user: UserWithoutPassword,
+  friend: UserWithoutPassword
+) {
   return await getPrismaClient().$transaction(async (prisma) => {
     // check if the request exists
     const requests = await prisma.request.findMany({
@@ -150,11 +230,11 @@ async function rejectFriendRequest(user: User, friend: User) {
   });
 }
 
-async function sendMessage(sender: User, receipient: User, text: string) {
-  if (!sender.friends.includes(receipient.id)) {
-    return new Error("You are not friends with this user");
-  }
-
+async function sendMessage(
+  sender: UserWithoutPassword,
+  receipient: UserWithoutPassword,
+  text: string
+) {
   const conversationId =
     sender.id > receipient.id
       ? `${sender.id}-${receipient.id}`
@@ -173,6 +253,9 @@ async function sendMessage(sender: User, receipient: User, text: string) {
     conversation = await getPrismaClient().conversation.create({
       data: {
         conversationId,
+        lastMessage: text,
+        lastMessageBy: sender.id,
+        unReadCount: 1,
         messages: {
           create: {
             senderId: sender.id,
@@ -192,6 +275,11 @@ async function sendMessage(sender: User, receipient: User, text: string) {
         conversationId,
       },
       data: {
+        lastMessage: text,
+        lastMessageBy: sender.id,
+        unReadCount: {
+          increment: 1,
+        },
         messages: {
           create: {
             senderId: sender.id,
@@ -208,7 +296,10 @@ async function sendMessage(sender: User, receipient: User, text: string) {
   return conversation;
 }
 
-async function updateMessageStatus(sender: User, receipient: User) {
+async function updateMessageStatus(
+  sender: UserWithoutPassword,
+  receipient: UserWithoutPassword
+) {
   const conversationId =
     sender.id > receipient.id
       ? `${sender.id}-${receipient.id}`
@@ -240,12 +331,23 @@ async function updateMessageStatus(sender: User, receipient: User) {
       status: "read",
     },
   });
+  // update the conversation object in the database
+  await getPrismaClient().conversation.update({
+    where: {
+      conversationId,
+    },
+    data: {
+      unReadCount: 0,
+    },
+  });
+
   return updatedMessages;
 }
 
 export default {
   getUser,
-  createUser,
+  login,
+  register,
   sendFriendRequest,
   acceptFriendRequest,
   rejectFriendRequest,

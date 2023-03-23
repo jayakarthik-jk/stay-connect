@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { Image, StyleSheet, TextInput, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { useUser } from "../../Context/User";
 import useDynamicColors from "../../Hooks/useDynamicColors";
 import { colors } from "../../Util";
 import Button from "../Common/Button";
 import Http from "../../Services/Http";
-import Labels from "../../Navigation/Labels";
-import Touchable from "../Common/Touchable";
 import Text from "../Common/Text";
-import { useNavigation } from "@react-navigation/native";
+import Touchable from "../Common/Touchable";
+import Labels from "../../Navigation/Labels";
 
-function LoginScreen() {
+function RegisterScreen() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setUser } = useUser();
@@ -18,8 +19,8 @@ function LoginScreen() {
 
   const navigation = useNavigation();
 
-  const handleLogin = async () => {
-    const response = await Http.login(email, password);
+  const handleRegister = async () => {
+    const response = await Http.register(email, name, password);
     if (response instanceof Error) {
       return alert(response.message);
     }
@@ -28,9 +29,16 @@ function LoginScreen() {
   return (
     <View style={[styles.container, background]}>
       <Image
-        source={require("../../../assets/login.png")}
+        source={require("../../../assets/register.png")}
         resizeMode="contain"
         style={styles.backgroundImage}
+      />
+      <TextInput
+        placeholder="Name"
+        placeholderTextColor={font.color}
+        value={name}
+        onChangeText={setName}
+        style={styles.input}
       />
       <TextInput
         placeholder="Email"
@@ -47,14 +55,14 @@ function LoginScreen() {
         style={styles.input}
         secureTextEntry
       />
-      <Button onPress={handleLogin}>Login</Button>
+      <Button onPress={handleRegister}>Register</Button>
       <Text style={styles.redirectText}>
-        Don't have an account
+        Already have an account
         <Touchable
           noFeedback
-          onPress={() => navigation.replace(Labels.REGISTER_SCREEN)}
+          onPress={() => navigation.replace(Labels.LOGIN_SCREEN)}
         >
-          <Text style={styles.redirectLink}>&nbsp;Register</Text>
+          <Text style={styles.redirectLink}>&nbsp;Login</Text>
         </Touchable>
       </Text>
     </View>
@@ -89,4 +97,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default RegisterScreen;

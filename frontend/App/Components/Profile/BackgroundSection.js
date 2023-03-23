@@ -9,6 +9,7 @@ import { colors } from "../../Util";
 import Touchable from "../Common/Touchable";
 import SvgImage from "../Common/SvgImage";
 import useDynamicColors from "../../Hooks/useDynamicColors";
+import Labels from "../../Navigation/Labels";
 
 function BackgroundSection() {
   const navigation = useNavigation();
@@ -54,7 +55,7 @@ function BackgroundSection() {
           <Touchable
             opacity
             style={styles.settingsIconContainer}
-            onPress={() => navigation.navigate("Settings")}
+            onPress={() => navigation.navigate(Labels.SETTINGS_SCREEN)}
           >
             <MaterialIcons name="settings" size={30} color={font.color} />
           </Touchable>

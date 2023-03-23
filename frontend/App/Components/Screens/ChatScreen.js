@@ -42,10 +42,7 @@ const data = [
 function ChatScreen() {
   const [messages, setMessages] = useState(data);
   const [input, setInput] = useState("");
-  const isSameUser = () => {
-    if (messages[messages.length - 1]?.send) return true;
-    return false;
-  };
+  const isSameUser = () => messages[messages.length - 1]?.send;
   const handleSend = () => {
     if (!input || input.length < 0) return;
     const newMessage = {
@@ -84,6 +81,7 @@ function ChatScreen() {
     </ImageBackground>
   );
 }
+
 const styles = StyleSheet.create({
   background: {
     width: "100%",

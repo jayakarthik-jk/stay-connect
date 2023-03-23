@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import GetStartedScreen from "../Components/Screens/GetStartedScreen";
 import LoginScreen from "../Components/Screens/LoginScreen";
+import RegisterScreen from "../Components/Screens/RegisterScreen";
 import Labels from "./Labels";
 
 function AuthNavigator() {
@@ -14,6 +15,7 @@ function AuthNavigator() {
         component={GetStartedScreen}
       />
       <Stack.Screen name={Labels.LOGIN_SCREEN} component={LoginScreen} />
+      <Stack.Screen name={Labels.REGISTER_SCREEN} component={RegisterScreen} />
     </Stack.Navigator>
   );
 }

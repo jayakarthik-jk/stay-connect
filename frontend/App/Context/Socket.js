@@ -12,22 +12,20 @@ export const useSocket = () => useContext(SocketContext);
 export function SocketContextProvider({ children }) {
   const [socket, setSocket] = useState();
   const { user } = useUser();
-
   useEffect(() => {
-    console.log("SocketContextProvider useEffect");
-    if (!user.email || !user.password) return;
+    if (!user.email) return;
 
     const backend_url = process.env.STAY_CONNECT_BACKEND_URL;
     if (!backend_url) throw new Error("No backend url");
 
     const newSocket = io(backend_url, {
-      query: { email: user.email, password: user.password },
+      query: { email: user.email },
     });
 
     setSocket(newSocket);
 
     return () => newSocket.close();
-  }, [user.email, user.password]);
+  }, [user]);
 
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>

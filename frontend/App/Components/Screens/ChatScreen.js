@@ -7,6 +7,8 @@ import Touchable from "../Common/Touchable";
 import List from "../Common/List";
 import Text from "../Common/Text";
 import MessageElement from "../Message/MessageElement";
+import { useRoute } from "@react-navigation/native";
+import Http from "../../Services/Http";
 
 const data = [
   {
@@ -40,6 +42,16 @@ const data = [
 ];
 
 function ChatScreen() {
+  const route = useRoute();
+  useEffect(() => {
+    const { id: conversationId } = route.params;
+    const messages = Http.getMessages(conversationId);
+
+    if (messages instanceof Error) return alert(messages.message);
+
+    setMessages(messages);
+  }, []);
+
   const [messages, setMessages] = useState(data);
   const [input, setInput] = useState("");
   const isSameUser = () => messages[messages.length - 1]?.send;

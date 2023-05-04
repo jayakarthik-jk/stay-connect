@@ -1,7 +1,7 @@
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
-import router from "./src/router";
+import auth from "./src/router/auth";
 import { createServer } from "http";
 import initSocket from "./src/socket";
 
@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 app.use(helmet());
 app.use(cors());
-app.use("/", router);
+app.use("/", auth);
 const httpServer = createServer(app);
 initSocket(httpServer);
 const PORT = process.env.PORT || 3001;

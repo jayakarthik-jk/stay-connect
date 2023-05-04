@@ -1,5 +1,6 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { MaterialIcons } from "@expo/vector-icons";
+
 import ChatScreenNavigator from "./ChatScreenNavigator";
 import SettingsNavigator from "./SettingsNavigator";
 import { colors } from "../Util";
@@ -7,6 +8,7 @@ import { useRoute } from "../Context/Route";
 import { useAppTheme } from "../Context/AppTheme";
 import Labels from "./Labels";
 import SearchScreenNavigator from "./SearchNavigator";
+
 function AppTabNavigator() {
   const { routeName } = useRoute();
   const theme = useAppTheme();

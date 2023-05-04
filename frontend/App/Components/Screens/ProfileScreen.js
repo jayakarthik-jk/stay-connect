@@ -6,18 +6,12 @@ import PostSection from "../Profile/PostSection";
 import useDynamicColors from "../../Hooks/useDynamicColors";
 
 function ProfileScreen() {
-  const user = {
-    username: "Jayakarthik",
-    number: "9884117398",
-    postCount: 100,
-    viewsCount: 10000,
-  };
   const { background } = useDynamicColors();
 
   return (
     <View style={[styles.container, background]}>
       <BackgroundSection />
-      <InfoSection {...user} />
+      <InfoSection />
       <View style={styles.seperator} />
       <PostSection />
     </View>

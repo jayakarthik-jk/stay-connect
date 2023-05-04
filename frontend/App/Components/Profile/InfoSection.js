@@ -7,11 +7,15 @@ import Text from "../Common/Text";
 function InfoSection({ postCount, viewsCount }) {
   const { background } = useDynamicColors();
   const { user } = useUser();
+  user.postCount = 100;
+  user.viewsCount = 10000;
+
   console.log(user);
+
   return (
     <View style={styles.infoSection}>
       <View style={styles.infoContainer}>
-        <Text style={styles.infoname}>{user.email}</Text>
+        <Text style={styles.infoname}>{user.name}</Text>
       </View>
       <View style={[styles.statsContainer, background]}>
         <View style={styles.countContainer}>

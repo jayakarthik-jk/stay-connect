@@ -1,10 +1,9 @@
 import { Router } from "express";
 import rateLimit from "express-rate-limit";
-import db from "./database";
+
+import db from "../database";
 
 const router = Router();
-
-router.get("/", (req, res) => res.send("Stay Connect"));
 
 const loginLimiter = rateLimit({
   windowMs: 60 * 1000,

@@ -1,9 +1,8 @@
 import { View, StyleSheet, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+
 import useDynamicColors from "../../Hooks/useDynamicColors";
-
 import { colors } from "../../Util";
-
 import Touchable from "../Common/Touchable";
 import SvgImage from "../Common/SvgImage";
 import Text from "../Common/Text";

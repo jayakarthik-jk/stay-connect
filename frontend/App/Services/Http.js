@@ -51,7 +51,30 @@ async function register(email, name, password) {
   }
 }
 
+async function getMessages(conversationId) {
+  try {
+    const response = await fetch(
+      process.env.STAY_CONNECT_BACKEND_URL + "/messages/" + conversationId,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = await response.json();
+    if (response.status !== 200) {
+      return new Error(data.message);
+    }
+    return data;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+}
+
 export default {
   login,
   register,
+  getMessages,
 };

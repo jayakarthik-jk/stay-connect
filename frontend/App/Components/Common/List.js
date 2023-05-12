@@ -1,3 +1,4 @@
+import React from "react";
 import { FlatList } from "react-native";
 
 function List({ data, Component, ...props }) {
@@ -11,4 +12,4 @@ function List({ data, Component, ...props }) {
   );
 }
 
-export default List;
+export default React.memo(List);

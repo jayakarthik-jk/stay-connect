@@ -2,12 +2,7 @@ import { StyleSheet, TextInput, View } from "react-native";
 import React, { useState } from "react";
 import { colors } from "../../Util";
 import { Ionicons } from "@expo/vector-icons";
-const SearchBar = ({ onSearch, onClick }) => {
-  const [query, setQuery] = useState("");
-  const handleChangeText = (text) => {
-    onSearch(text);
-    setQuery(text);
-  };
+const SearchBar = ({ onSearch, onClick, query }) => {
   return (
     <View style={styles.searchSection}>
       <View style={styles.iconContainer}>
@@ -17,7 +12,7 @@ const SearchBar = ({ onSearch, onClick }) => {
         style={styles.input}
         placeholder="Search"
         value={query}
-        onChangeText={handleChangeText}
+        onChangeText={onSearch}
         underlineColorAndroid="transparent"
         onPressIn={onClick}
       />

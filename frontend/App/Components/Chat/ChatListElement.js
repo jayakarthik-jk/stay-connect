@@ -4,8 +4,8 @@ import { useNavigation } from "@react-navigation/native";
 import useDynamicColors from "../../Hooks/useDynamicColors";
 import { colors } from "../../Util";
 import Touchable from "../Common/Touchable";
-import SvgImage from "../Common/SvgImage";
 import Text from "../Common/Text";
+import Avatar from "../Common/Avatar";
 import Labels from "../../Navigation/Labels";
 
 function ChatListElement({
@@ -25,24 +25,29 @@ function ChatListElement({
         navigation.navigate(Labels.CHAT_SCREEN, {
           id: conversationId,
           name: friendName,
+          profile: friendProfile,
         })
       }
     >
       <View style={[styles.container, background]}>
         <View style={styles.leftContainer}>
-          {friendProfile ? (
-            <Image source={friendProfile} style={styles.profile} />
-          ) : (
-            <View style={styles.profile}>
-              <SvgImage seed={friendName} />
-            </View>
-          )}
+          <Avatar
+            name={friendName}
+            profile={friendProfile}
+            style={styles.profile}
+          />
           <View style={styles.messageContainer}>
             <Text style={styles.name}>{friendName}</Text>
-            <Text style={styles.message}>{lastMessage}</Text>
+            {lastMessage && (
+              <Text style={styles.message}>
+                {lastMessage.length > 30
+                  ? lastMessage.substring(0, 30) + "..."
+                  : lastMessage}
+              </Text>
+            )}
           </View>
         </View>
-        {(lastMessageBy === friendId) & (unReadCount > 0) && (
+        {lastMessageBy === friendId && unReadCount > 0 && (
           <View style={styles.badge}>
             <Text style={styles.badgeText}>{unReadCount}</Text>
           </View>
@@ -67,10 +72,11 @@ const styles = StyleSheet.create({
     color: colors.white,
   },
   container: {
-    flexDirection: "row",
-    padding: 10,
     justifyContent: "space-between",
     alignItems: "center",
+    flexDirection: "row",
+    padding: 10,
+    paddingHorizontal: 20,
   },
   leftContainer: {
     flexDirection: "row",
@@ -79,8 +85,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   messageContainer: {
-    justifyContent: "space-between",
-    marginLeft: 10,
+    justifyContent: "center",
+    gap: 5,
   },
   name: {
     fontSize: 18,
@@ -90,8 +96,6 @@ const styles = StyleSheet.create({
     width: 55,
     height: 55,
     marginRight: 10,
-    borderRadius: 30,
-    overflow: "hidden",
   },
 });
 

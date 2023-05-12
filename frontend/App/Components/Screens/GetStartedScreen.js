@@ -19,7 +19,7 @@ function GetStartedScreen() {
         style={styles.backgroundImage}
       />
       <Button
-        onPress={() => navigation.navigate(Labels.REGISTER_SCREEN)}
+        onPress={() => navigation.navigate(Labels.LOGIN_SCREEN)}
         style={styles.button}
       >
         Get Started

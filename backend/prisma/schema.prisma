@@ -11,15 +11,13 @@ datasource db {
 }
 
 model User {
-  id               String         @id @default(auto()) @map("_id") @db.ObjectId
-  email            String         @unique
-  password         String
-  name             String
-  Conversations    Conversation[]
-  profile          String?
-  incomingRequests Request[]      @relation("incomingRequests")
-  outgoingRequests Request[]      @relation("outgoingRequests")
-  friends          String[]       @default([]) @db.ObjectId
+  id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  email           String         @unique
+  password        String
+  name            String
+  conversationIds String[]       @db.ObjectId
+  conversations   Conversation[] @relation(fields: [conversationIds], references: [id])
+  profile         String?
 }
 
 model Message {
@@ -28,28 +26,17 @@ model Message {
   receiverId     String        @db.ObjectId
   content        String
   status         String        @default("unread")
-  Conversation   Conversation? @relation(fields: [conversationId], references: [id])
+  conversation   Conversation? @relation(fields: [conversationId], references: [id])
   conversationId String?       @db.ObjectId
 }
 
 model Conversation {
-  id                  String    @id @default(auto()) @map("_id") @db.ObjectId
-  conversationId      String    @unique
-  messages            Message[]
-  lastMessage         String
-  lastMessageBy       String    @db.ObjectId
-  unReadCount         Int       @default(0)
-  participantsName    String[]
-  participantsProfile String[]
-  User                User?     @relation(fields: [userId], references: [id])
-  userId              String?   @db.ObjectId
-}
-
-model Request {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
-  senderId      String @db.ObjectId
-  receiverId    String @db.ObjectId
-  status        String @default("pending")
-  receivingUser User?  @relation("incomingRequests", fields: [receiverId], references: [id])
-  sendingUser   User?  @relation("outgoingRequests", fields: [senderId], references: [id])
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  conversationId String    @unique
+  messages       Message[]
+  lastMessage    String
+  lastMessageBy  String    @db.ObjectId
+  unReadCount    Int       @default(0)
+  participantsId String[]  @db.ObjectId
+  participants   User[]    @relation(fields: [participantsId], references: [id])
 }

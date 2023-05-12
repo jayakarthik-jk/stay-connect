@@ -24,7 +24,7 @@ function Navigation() {
         setRouteName(currentRouteName);
       }}
     >
-      {user.email ? <AppTabNavigator /> : <AuthNavigator />}
+      {user && user.email ? <AppTabNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
 }

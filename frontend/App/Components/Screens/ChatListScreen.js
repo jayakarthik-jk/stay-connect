@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { View, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 import ChatScreenHeader from "../Chat/ChatScreenHeader";
 import ChatListElement from "../Chat/ChatListElement";
@@ -7,48 +8,41 @@ import List from "../Common/List";
 import Text from "../Common/Text";
 
 import useDynamicColors from "../../Hooks/useDynamicColors";
-import { useSocket } from "../../Context/Socket";
 import { useUser } from "../../Context/User";
+import { useConversations } from "../../Context/Conversations";
 
 function ChatListScreen() {
   const { user } = useUser();
-  const [chats, setChats] = useState([]);
-  const [filteredChat, setFilteredChat] = useState(chats);
-  const handleSearch = (query) => {
-    setFilteredChat();
-    user.friends.filter((chat) => chat.username.match(new RegExp(query, "i")));
+  const { conversations } = useConversations();
+  const chats = refractorChats(conversations);
+  const [query, setQuery] = useState("");
+  const { background } = useDynamicColors();
+
+  const getFilteredChats = () => {
+    return chats.filter((chat) =>
+      chat.friendName.match(new RegExp(query, "i"))
+    );
   };
 
-  const { background } = useDynamicColors();
-  const socket = useSocket();
-  useEffect(() => {
-    if (socket) {
-      socket.on("receive-message", () => {
-        console.log("message received");
-      });
-    }
-  }, [socket]);
-  useEffect(() => {
-    if (!user || !socket) {
-      // display error
-      return;
-    }
-    user.conversations.forEach((conv) => {
+  function refractorChats(chats) {
+    return chats.map((conv) => {
       conv.friendId = conv.conversationId.replace(user.id, "").replace("-", "");
       conv.friendName =
-        conv.participantsName[0] === user.name
-          ? conv.participantsName[1]
-          : conv.participantsName[0];
+        conv.participants[0].id === user.id
+          ? conv.participants[1].name
+          : conv.participants[0].name;
       conv.friendProfile =
-        conv.participantsProfile[0] === user.profile
-          ? conv.participantsProfile[1]
-          : conv.participantsProfile[0];
+        conv.participants[0].id === user.id
+          ? conv.participants[1].profile
+          : conv.participants[0].profile;
+      return conv;
     });
-    setChats(user.conversations);
-  }, []);
+  }
+
+  const filteredChat = getFilteredChats();
   return (
     <View style={[styles.main, background]}>
-      <ChatScreenHeader onSearch={handleSearch} />
+      <ChatScreenHeader onSearch={setQuery} query={query} />
       <View
         style={
           filteredChat.length > 0
@@ -59,7 +53,17 @@ function ChatListScreen() {
         {filteredChat.length > 0 ? (
           <List data={filteredChat} Component={ChatListElement} />
         ) : (
-          <Text>No chats found !</Text>
+          <Text>
+            {query === "" ? (
+              <>
+                Start a conversation by pressing &nbsp;
+                <Ionicons name="person-add-sharp" size={24} />
+                &nbsp; above
+              </>
+            ) : (
+              "No chats found !"
+            )}
+          </Text>
         )}
       </View>
     </View>
@@ -77,30 +81,3 @@ const styles = StyleSheet.create({
 });
 
 export default ChatListScreen;
-
-const chats = [
-  {
-    name: "John Doe",
-    lastMessage: "Hello",
-    profile: require("../../../assets/wallpaper.jpg"),
-    unread: true,
-    count: 2,
-    id: 1,
-  },
-  {
-    name: "Doe",
-    lastMessage: "Hi",
-    profile: require("../../../assets/wallpaper.jpg"),
-    unread: true,
-    count: 2,
-    id: 2,
-  },
-  {
-    name: "Del",
-    lastMessage: "Hey",
-    profile: require("../../../assets/wallpaper.jpg"),
-    unread: true,
-    count: 2,
-    id: 3,
-  },
-];

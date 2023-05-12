@@ -9,7 +9,7 @@ import Touchable from "../Common/Touchable";
 import SearchBar from "../Common/SearchBar";
 import Text from "../Common/Text";
 
-function ChatScreenHeader({ onSearch }) {
+function ChatScreenHeader({ onSearch, query }) {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
@@ -24,7 +24,7 @@ function ChatScreenHeader({ onSearch }) {
           </Text>
         </Touchable>
       </View>
-      <SearchBar onSearch={onSearch} />
+      <SearchBar onSearch={onSearch} query={query} />
     </View>
   );
 }

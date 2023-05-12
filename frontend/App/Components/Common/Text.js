@@ -1,4 +1,4 @@
-import { StyleSheet, Text as NativeText, View } from "react-native";
+import { StyleSheet, Text as NativeText } from "react-native";
 import React from "react";
 import useDynamicColors from "../../Hooks/useDynamicColors";
 
@@ -14,5 +14,7 @@ const Text = ({ children, style: customStyle, ...props }) => {
 export default Text;
 
 const styles = StyleSheet.create({
-  text: {},
+  text: {
+    fontSize: 14,
+  },
 });

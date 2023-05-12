@@ -10,8 +10,6 @@ function InfoSection({ postCount, viewsCount }) {
   user.postCount = 100;
   user.viewsCount = 10000;
 
-  console.log(user);
-
   return (
     <View style={styles.infoSection}>
       <View style={styles.infoContainer}>

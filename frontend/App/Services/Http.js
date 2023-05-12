@@ -1,80 +1,54 @@
-async function login(email, password) {
+import axios from "axios";
+import * as SecureStore from "expo-secure-store";
+
+export const BACKEND_URL = "http://192.168.210.153:3001";
+
+const instance = axios.create({
+  baseURL: BACKEND_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+instance.interceptors.request.use(
+  async (config) => {
+    const token = await SecureStore.getItemAsync("token");
+    if (token) config.headers["X-Auth-Token"] = token;
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+const post = async (url, body) => {
   try {
-    const response = await fetch(
-      process.env.STAY_CONNECT_BACKEND_URL + "/login",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      }
-    );
-    const data = await response.json();
-    if (response.status !== 200) {
-      return new Error(data.message);
-    }
-    return data;
+    const response = await instance.post(url, body);
+    return response.data;
   } catch (error) {
     console.log(error);
-    return error;
+    if (
+      error.response &&
+      error.response.status >= 400 &&
+      error.response.status < 500
+    )
+      return new Error(error.response.data.error);
+    return new Error("Something went wrong !");
   }
-}
-
-async function register(email, name, password) {
-  try {
-    const response = await fetch(
-      process.env.STAY_CONNECT_BACKEND_URL + "/register",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          name,
-          password,
-        }),
-      }
-    );
-    const data = await response.json();
-    if (response.status !== 200) {
-      return new Error(data.message);
-    }
-    return data;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-}
-
-async function getMessages(conversationId) {
-  try {
-    const response = await fetch(
-      process.env.STAY_CONNECT_BACKEND_URL + "/messages/" + conversationId,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const data = await response.json();
-    if (response.status !== 200) {
-      return new Error(data.message);
-    }
-    return data;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-}
-
-export default {
-  login,
-  register,
-  getMessages,
 };
+
+const get = async (url) => {
+  try {
+    const response = await instance.get(url);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    if (
+      error.response &&
+      error.response.status >= 400 &&
+      error.response.status < 500
+    )
+      return new Error(error.response.data.error);
+    return new Error("Something went wrong !");
+  }
+};
+
+export default { post, get };

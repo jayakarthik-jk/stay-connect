@@ -2,6 +2,7 @@ import { useContext, createContext, useEffect, useState } from "react";
 import io from "socket.io-client";
 
 import { useUser } from "./User";
+import { BACKEND_URL } from "../Services/Http";
 
 export const SocketContext = createContext();
 
@@ -13,12 +14,10 @@ export function SocketContextProvider({ children }) {
   const [socket, setSocket] = useState();
   const { user } = useUser();
   useEffect(() => {
-    if (!user.email) return;
+    console.log("re connecting socket for", user?.email);
+    if (!user || !user.email) return;
 
-    const backend_url = process.env.STAY_CONNECT_BACKEND_URL;
-    if (!backend_url) throw new Error("No backend url");
-
-    const newSocket = io(backend_url, {
+    const newSocket = io(BACKEND_URL, {
       query: { email: user.email },
     });
 

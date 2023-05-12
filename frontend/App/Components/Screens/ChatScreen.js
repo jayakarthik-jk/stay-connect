@@ -1,71 +1,35 @@
 import { View, StyleSheet, ImageBackground, TextInput } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { useRoute } from "@react-navigation/native";
 
-import { colors, genId, getTime } from "../../Util";
 import Touchable from "../Common/Touchable";
 import List from "../Common/List";
 import Text from "../Common/Text";
+import Avatar from "../Common/Avatar";
 import MessageElement from "../Message/MessageElement";
-import { useRoute } from "@react-navigation/native";
-import Http from "../../Services/Http";
-
-const data = [
-  {
-    id: genId(),
-    message: "hey",
-    time: getTime(),
-    send: true,
-    sameUser: false,
-  },
-  {
-    id: genId(),
-    message: "how are you",
-    time: getTime(),
-    send: true,
-    sameUser: true,
-  },
-  {
-    id: genId(),
-    message: "I am fine",
-    time: getTime(),
-    send: false,
-    sameUser: false,
-  },
-  {
-    id: genId(),
-    message: "what about you",
-    time: getTime(),
-    send: false,
-    sameUser: true,
-  },
-];
+import { colors } from "../../Util";
+import { useUser } from "../../Context/User";
+import { useConversations } from "../../Context/Conversations";
 
 function ChatScreen() {
   const route = useRoute();
+  const { user } = useUser();
+  const { name, profile, id: conversationId } = route.params;
+  const { getMessages, addMessage, updateMessageSeen } = useConversations();
+  const friendId = conversationId.replace(user.id, "").replace("-", "");
+  const messages = getMessages(conversationId);
+  const [input, setInput] = useState("");
+
   useEffect(() => {
-    const { id: conversationId } = route.params;
-    const messages = Http.getMessages(conversationId);
-
-    if (messages instanceof Error) return alert(messages.message);
-
-    setMessages(messages);
+    updateMessageSeen(conversationId, friendId);
   }, []);
 
-  const [messages, setMessages] = useState(data);
-  const [input, setInput] = useState("");
-  const isSameUser = () => messages[messages.length - 1]?.send;
   const handleSend = () => {
-    if (!input || input.length < 0) return;
-    const newMessage = {
-      id: genId(),
-      message: input,
-      time: getTime(),
-      send: true,
-      sameUser: isSameUser(),
-    };
-    setMessages((oldMessages) => [...oldMessages, newMessage]);
-    setInput("");
+    if (input && input.length > 0) {
+      addMessage(user.id, friendId, input);
+      setInput("");
+    }
   };
   return (
     <ImageBackground
@@ -73,7 +37,22 @@ function ChatScreen() {
       source={require("../../../assets/wallpaper.jpg")}
     >
       <View style={styles.container}>
-        <List data={messages} Component={MessageElement} />
+        {messages.length <= 0 ? (
+          <View style={styles.noMessagesSection}>
+            <View style={styles.noMessagesCard} />
+            <View style={styles.noMessagesContainer}>
+              <Avatar name={name} profile={profile} style={styles.profile} />
+              <Text style={styles.noMessagesText}>Start Conversation</Text>
+            </View>
+          </View>
+        ) : (
+          <List
+            data={messages}
+            Component={MessageElement}
+            inverted
+            contentContainerStyle={{ flexDirection: "column-reverse", gap: 2 }}
+          />
+        )}
         <TextInput
           style={styles.input}
           value={input}
@@ -102,6 +81,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 5,
+    paddingBottom: 80,
   },
   btnContainer: {
     width: 60,
@@ -128,7 +108,36 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     borderRadius: 25,
     fontSize: 18,
-    paddingHorizontal: 15,
+    paddingLeft: 15,
+    paddingRight: 60,
+  },
+  noMessagesSection: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  noMessagesContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: "75%",
+    height: "50%",
+    gap: 10,
+  },
+  noMessagesCard: {
+    backgroundColor: colors.darkGrey,
+    opacity: 0.4,
+    width: "75%",
+    height: "50%",
+    borderRadius: 10,
+    position: "absolute",
+  },
+  noMessagesText: {
+    color: colors.white,
+    fontSize: 20,
+  },
+  profile: {
+    width: 150,
+    height: 150,
   },
 });
 

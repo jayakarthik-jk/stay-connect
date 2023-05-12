@@ -1,29 +1,31 @@
+import { Image, StyleSheet, View } from "react-native";
 import { useState } from "react";
-import { Image, StyleSheet, TextInput, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
 import { useUser } from "../../Context/User";
 import useDynamicColors from "../../Hooks/useDynamicColors";
 import { colors } from "../../Util";
+import * as SecureStorage from "expo-secure-store";
 import Button from "../Common/Button";
-import Http from "../../Services/Http";
-import Labels from "../../Navigation/Labels";
 import Touchable from "../Common/Touchable";
 import Text from "../Common/Text";
-import { useNavigation } from "@react-navigation/native";
+import Input from "../Common/Input";
+import Backend from "../../Services/Backend";
+import Labels from "../../Navigation/Labels";
 
 function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setUser } = useUser();
-  const { background, font } = useDynamicColors();
-
+  const { background } = useDynamicColors();
   const navigation = useNavigation();
-
   const handleLogin = async () => {
-    const response = await Http.login(email, password);
-    if (response instanceof Error) {
-      return alert(response.message);
-    }
-    setUser(response);
+    const response = await Backend.login(email, password);
+    if (response instanceof Error) return alert(response.message);
+    console.log(response.token);
+    if (response.token)
+      await SecureStorage.setItemAsync("token", response.token);
+    setUser(response.data);
   };
   return (
     <View style={[styles.container, background]}>
@@ -32,19 +34,11 @@ function LoginScreen() {
         resizeMode="contain"
         style={styles.backgroundImage}
       />
-      <TextInput
-        placeholder="Email"
-        placeholderTextColor={font.color}
-        value={email}
-        onChangeText={setEmail}
-        style={styles.input}
-      />
-      <TextInput
-        placeholderTextColor={font.color}
+      <Input placeholder="Email" value={email} onChangeText={setEmail} />
+      <Input
         placeholder="Password"
         value={password}
         onChangeText={setPassword}
-        style={styles.input}
         secureTextEntry
       />
       <Button onPress={handleLogin}>Login</Button>

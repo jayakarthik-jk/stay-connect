@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import Backend from "../Services/Backend";
 
 const UserContext = createContext();
 
@@ -11,6 +12,17 @@ export const UserContextProvider = ({ children }) => {
     email: null,
     password: null,
   });
+  useEffect(() => {
+    async function fetchUser() {
+      const status = await Backend.isloggedIn();
+      console.log(status);
+      if (status instanceof Error) return;
+      if (!status.isLoggedIn) return;
+      setUser(status.user);
+    }
+    fetchUser();
+  }, []);
+
   return (
     <UserContext.Provider value={{ user, setUser }}>
       {children}

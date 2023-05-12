@@ -71,14 +71,14 @@ function BackgroundSection() {
         <View style={styles.profileSection}>
           <View style={styles.profileContainer}>
             <Touchable opacity onPress={pickProfileImage}>
-              {/* {profileImage ? (
+              {profileImage ? (
                 <Image
                   style={styles.profile}
                   source={{ uri: profileImage.uri }}
                 />
               ) : (
                 <SvgImage style={styles.profile} />
-              )} */}
+              )}
             </Touchable>
           </View>
         </View>

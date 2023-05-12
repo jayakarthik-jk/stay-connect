@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 0,
   },
   messageContainer: {
-    margin: 1,
+    margin: 0.5,
   },
   mr: {
     marginRight: 10,

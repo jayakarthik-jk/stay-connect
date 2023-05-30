@@ -10,6 +10,23 @@ import conversations from "./src/routes/conversations";
 import users from "./src/routes/users";
 import errorMiddleware from "./src/middleware/error";
 
+import { Conversation, User } from "@prisma/client";
+
+export type UserWithoutPassword = Omit<
+  User & {
+    conversations: Conversation[];
+  },
+  "password"
+>;
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: UserWithoutPassword;
+    }
+  }
+}
+
 const app = express();
 app.use(helmet());
 app.use(express.json());

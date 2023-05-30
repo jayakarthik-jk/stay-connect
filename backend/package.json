@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.ts",
-    "build": "npm i; tsc",
+    "build": "npm i; npx prisma generate; tsc",
     "start": "node dist/index.js"
   },
   "keywords": [],

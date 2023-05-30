@@ -1,5 +1,5 @@
 import { getPrismaClient } from ".";
-import { UserWithoutPassword } from "../../types";
+import { UserWithoutPassword } from "../..";
 import { genConversationId } from "./conversations";
 
 export async function sendMessage(

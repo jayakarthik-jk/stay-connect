@@ -72,9 +72,8 @@ app.all("*", (req, res) => {
 });
 
 const port = process.env.PORT ? +process.env.PORT : 3001;
-const hostname = "192.168.47.59";
-httpServer.listen(port, hostname, () => {
-  console.log(`Server is running on port http://${hostname}:${port}`);
+httpServer.listen(port, () => {
+  console.log(`Server is running on port :${port}`);
 });
 
 export default app;

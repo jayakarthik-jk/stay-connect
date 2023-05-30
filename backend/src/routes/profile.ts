@@ -2,7 +2,6 @@ import { Router } from "express";
 import db from "../database";
 import auth from "../middleware/auth";
 import multer from "multer";
-import path from "path";
 
 const router = Router();
 

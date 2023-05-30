@@ -2,7 +2,7 @@ import { Server } from "socket.io";
 import LRUCache from "lru-cache";
 
 import db from "./database";
-import { UserWithoutPassword } from "../types";
+import { UserWithoutPassword } from "..";
 import { getUser } from "./database/users";
 
 const cache = new LRUCache<string, UserWithoutPassword>({

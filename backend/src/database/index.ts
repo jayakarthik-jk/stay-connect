@@ -1,5 +1,5 @@
 import { Conversation, PrismaClient, User } from "@prisma/client";
-import { UserWithoutPassword } from "../../types";
+import { UserWithoutPassword } from "../..";
 
 import * as UsersMolude from "./users";
 import * as ConversationModule from "./conversations";

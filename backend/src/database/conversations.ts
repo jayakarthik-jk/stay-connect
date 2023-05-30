@@ -1,5 +1,5 @@
 import { getPrismaClient } from ".";
-import { UserWithoutPassword } from "../../types";
+import { UserWithoutPassword } from "../..";
 
 export async function getConversations(userId: string) {
   return await getPrismaClient().user.findUnique({

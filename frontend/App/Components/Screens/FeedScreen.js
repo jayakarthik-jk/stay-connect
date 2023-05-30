@@ -28,7 +28,7 @@ function FeedScreen() {
       if (posts instanceof Error) return alert("unable to fetch posts");
       const updatedPosts = posts.map((post) => ({
         id: post,
-        uri: BACKEND_URL + "/" + post,
+        uri: BACKEND_URL + "/" + post.replace("public/", ""),
         width: window.width,
         height: window.height,
       }));
@@ -53,8 +53,10 @@ function FeedScreen() {
     const match = /\.(\w+)$/.exec(filename);
     const type = match ? `image/${match[1]}` : `image`;
     formData.append("image", { uri: localUri, name: filename, type });
+    console.log("Uploading...");
     const res = await Backend.uploadPost(formData);
     if (res instanceof Error) return alert(res.message);
+    console.log("Uploaded Successfully");
     navigation.navigate(Labels.PROFILE_SCREEN);
   };
   return (

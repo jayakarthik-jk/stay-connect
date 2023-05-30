@@ -18,7 +18,7 @@ function PostSection() {
       if (posts instanceof Error) return alert("unable to fetch posts");
       const updatedPosts = posts.map((post) => ({
         id: post,
-        uri: BACKEND_URL + "/" + post,
+        uri: BACKEND_URL + "/" + post.replace("public/", ""),
         width: window.width / 2,
         height: 200,
       }));
@@ -33,14 +33,24 @@ function PostSection() {
           <Text style={styles.errorMessage}>No posts found</Text>
         </View>
       ) : (
-        <List Component={Post} data={posts} numColumns={2} />
+        <List
+          Component={Post}
+          data={posts}
+          numColumns={2}
+          style={styles.container}
+        />
       )}
     </View>
   );
 }
 
 const Post = ({ uri, width, height }) => (
-  <View>
+  <View
+    style={{
+      borderRadius: 15,
+      overflow: "hidden",
+    }}
+  >
     <Image source={{ uri, width, height }} />
   </View>
 );
@@ -50,6 +60,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  container: {
+    marginTop: 5,
   },
 });
 

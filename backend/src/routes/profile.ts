@@ -14,27 +14,29 @@ router.get("/", auth, async (req, res) => {
 
 const pickProfile = multer({
   storage: multer.diskStorage({
-    destination: (_req, _file, cb) => {
-      cb(null, "public/profiles");
-    },
-    filename: (_req, file, cb) => {
-      cb(null, `${Date.now()}_${file.originalname}`);
+    destination: "public/profiles/",
+    filename: function (_req, file, cb) {
+      const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+      cb(
+        null,
+        file.fieldname +
+          "-" +
+          uniqueSuffix +
+          "." +
+          file.originalname.split(".").pop()
+      );
     },
   }),
-  fileFilter: (_req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    if (ext !== ".jpg" && ext !== ".png") {
-      return cb(new Error("only jpg, png are allowed"));
-    }
-    cb(null, true);
-  },
 }).single("profile");
 
 router.post("/", auth, pickProfile, async (req, res) => {
   if (!req.user)
     return res.status(401).json({ isLoggedIn: false, error: "unauthorized" });
   if (!req.file) return res.status(400).send({ error: "no file" });
-  const updatedUser = await db.updateProfile(req.user.id, req.file.path);
+  const updatedUser = await db.updateProfile(
+    req.user.id,
+    req.file.path.replace("public\\", "")
+  );
   return res.status(200).send(updatedUser);
 });
 

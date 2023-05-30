@@ -39,10 +39,11 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(errorMiddleware);
+app.use(express.static("public/"));
 app.use("/users", users);
 app.use("/auth", auth);
 app.use("/conversations", conversations);
+app.use(errorMiddleware);
 
 const httpServer = createServer(app);
 initSocket(httpServer);
@@ -54,7 +55,7 @@ app.all("*", (req, res) => {
 });
 
 const port = process.env.PORT ? +process.env.PORT : 3001;
-const hostname = "192.168.210.153";
+const hostname = "192.168.47.59";
 httpServer.listen(port, hostname, () => {
   console.log(`Server is running on port http://${hostname}:${port}`);
 });

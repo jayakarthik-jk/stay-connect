@@ -27,6 +27,7 @@ export function excludePassword(
     email: user.email,
     name: user.name,
     profile: user.profile,
+    posts: user.posts,
     conversations: user.conversations,
     conversationIds: user.conversationIds,
   };

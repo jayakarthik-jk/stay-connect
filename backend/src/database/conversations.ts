@@ -22,6 +22,10 @@ export function genConversationId(senderId: string, receipientId: string) {
     : `${receipientId}-${senderId}`;
 }
 
+export function genFriendId(conversationId: string, userId: string) {
+  return conversationId.replace(userId, "").replace("-", "");
+}
+
 export async function getConversation(conversationId: string) {
   // get the user id from parameter and check if the user is authorized
   // to get this conversation.
@@ -58,6 +62,7 @@ export async function startConversation(
     },
     include: {
       participants: true,
+      messages: true,
     },
   });
   if (!conversation) {
@@ -79,6 +84,7 @@ export async function startConversation(
       },
       include: {
         participants: true,
+        messages: true,
       },
     });
   }

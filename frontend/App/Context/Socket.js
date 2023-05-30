@@ -14,8 +14,8 @@ export function SocketContextProvider({ children }) {
   const [socket, setSocket] = useState();
   const { user } = useUser();
   useEffect(() => {
-    console.log("re connecting socket for", user?.email);
     if (!user || !user.email) return;
+    console.log("re connecting socket for", user?.email);
 
     const newSocket = io(BACKEND_URL, {
       query: { email: user.email },

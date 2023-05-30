@@ -22,7 +22,6 @@ function RegisterScreen() {
   const handleRegister = async () => {
     const response = await Backend.register(email, name, password);
     if (response instanceof Error) return alert(response.message);
-    console.log(response.token);
     if (response.token)
       await SecureStorage.setItemAsync("token", response.token);
     setUser(response.data);

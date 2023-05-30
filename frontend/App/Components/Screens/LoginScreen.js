@@ -1,3 +1,5 @@
+import React from "react";
+
 import { Image, StyleSheet, View } from "react-native";
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -22,7 +24,6 @@ function LoginScreen() {
   const handleLogin = async () => {
     const response = await Backend.login(email, password);
     if (response instanceof Error) return alert(response.message);
-    console.log(response.token);
     if (response.token)
       await SecureStorage.setItemAsync("token", response.token);
     setUser(response.data);

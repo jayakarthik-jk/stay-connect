@@ -18,6 +18,7 @@ model User {
   conversationIds String[]       @db.ObjectId
   conversations   Conversation[] @relation(fields: [conversationIds], references: [id])
   profile         String?
+  posts           String[]
 }
 
 model Message {

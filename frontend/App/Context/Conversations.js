@@ -19,13 +19,18 @@ export const ConversationsContextProvider = ({ children }) => {
 
   const addMessage = (senderId, receiverId, content) => {
     // create a message object and update the state
+    let convoExist = false;
     const conversationId = genConvoId(senderId, receiverId);
     setConversations(
       conversations.map((conversation) => {
         if (conversation.conversationId === conversationId) {
+          convoExist = true;
           conversation.lastMessage = content;
-          if (senderId !== user.id) conversation.unReadCount += 1;
-          else conversation.unReadCount = 0;
+          if (senderId !== user.id) {
+            conversation.unReadCount += 1;
+          } else {
+            conversation.unReadCount = 0;
+          }
           const message = {
             id: genId(),
             message: content,
@@ -34,14 +39,22 @@ export const ConversationsContextProvider = ({ children }) => {
             send: senderId === user.id,
             time: getTime(),
             sameUser:
-              conversation.messages[conversation.messages.length - 1]
-                .senderId === senderId,
+              conversation?.messages.length <= 0
+                ? false
+                : conversation?.messages[conversation?.messages.length - 1]
+                    .senderId === senderId,
           };
-          conversation.messages.push(message);
+          conversation?.messages.push(message);
         }
         return conversation;
       })
     );
+
+    if (!convoExist) {
+      // not woking if conversation not exist
+      // TODO: Implement this
+    }
+
     // send the message using socket
     if (senderId === user.id && socket) {
       socket.emit("send-message", receiverId, content);
@@ -101,6 +114,16 @@ export const ConversationsContextProvider = ({ children }) => {
     }
   }, [user]);
 
+  const addConversation = (conversation) => {
+    if (conversations.findIndex((convo) => convo.id === conversation.id) !== -1)
+      return;
+    const updatedConvo = {
+      ...conversation,
+      messages: convertMessages(conversation.messages),
+    };
+    setConversations([...conversations, updatedConvo]);
+  };
+
   useEffect(() => {
     if (socket) {
       socket.on("receive-message", ({ message }) => {
@@ -117,6 +140,7 @@ export const ConversationsContextProvider = ({ children }) => {
         addMessage,
         getMessages,
         updateMessageSeen,
+        addConversation,
       }}
     >
       {children}

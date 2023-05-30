@@ -12,26 +12,30 @@ import Labels from "../../Navigation/Labels";
 import useDynamicColors from "../../Hooks/useDynamicColors";
 import Backend from "../../Services/Backend";
 import { useUser } from "../../Context/User";
+import { useConversations } from "../../Context/Conversations";
 
 function ContactsScreen() {
   const { background } = useDynamicColors();
   const [email, setEmail] = useState();
   const { user } = useUser();
+  const { addConversation } = useConversations();
   const navigation = useNavigation();
   const handleSubmit = async () => {
     const conversation = await Backend.makeConversation(email);
     if (conversation instanceof Error) return alert(conversation.message);
-    navigation.replace(Labels.CHAT_SCREEN, {
+    addConversation(conversation);
+    const convoPageProps = {
       id: conversation.conversationId,
       name:
         conversation.participants[0].id === user.id
-          ? conversation.participants[1].name
-          : conversation.participants[0].name,
+          ? conversation.participants[1]?.name
+          : conversation.participants[0]?.name,
       profile:
         conversation.participants[0].id === user.id
-          ? conversation.participants[1].profile
-          : conversation.participants[0].profile,
-    });
+          ? conversation.participants[1]?.profile
+          : conversation.participants[0]?.profile,
+    };
+    navigation.replace(Labels.CHAT_SCREEN, convoPageProps);
   };
   const handleInviteFriends = () => {
     const message = `

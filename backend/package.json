@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.ts",
-    "build": "tsc",
+    "build": "npm i; tsc",
     "start": "node dist/index.js"
   },
   "keywords": [],
@@ -21,6 +21,7 @@
     "@types/morgan": "^1.9.4",
     "@types/multer": "^1.4.7",
     "@types/node": "^18.15.3",
+    "@types/socket.io": "^3.0.2",
     "eslint": "^8.40.0",
     "nodemon": "^2.0.20",
     "prisma": "^4.11.0",
@@ -37,7 +38,6 @@
     "helmet": "^6.0.1",
     "jsonwebtoken": "^9.0.0",
     "lru-cache": "^8.0.4",
-    "multer": "^1.4.5-lts.1",
-    "socket.io": "^4.6.1"
+    "multer": "^1.4.5-lts.1"
   }
 }

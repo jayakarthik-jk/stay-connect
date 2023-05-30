@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 
-export const BACKEND_URL = "http://192.168.210.153:3001";
+export const BACKEND_URL = "http://192.168.47.59:3001";
 
 const instance = axios.create({
   baseURL: BACKEND_URL,
@@ -19,22 +19,6 @@ instance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-const post = async (url, body) => {
-  try {
-    const response = await instance.post(url, body);
-    return response.data;
-  } catch (error) {
-    console.log(error);
-    if (
-      error.response &&
-      error.response.status >= 400 &&
-      error.response.status < 500
-    )
-      return new Error(error.response.data.error);
-    return new Error("Something went wrong !");
-  }
-};
-
 const get = async (url) => {
   try {
     const response = await instance.get(url);
@@ -51,4 +35,42 @@ const get = async (url) => {
   }
 };
 
-export default { post, get };
+const post = async (url, body) => {
+  try {
+    const response = await instance.post(url, body);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    if (
+      error.response &&
+      error.response.status >= 400 &&
+      error.response.status < 500
+    )
+      return new Error(error.response.data.error);
+    return new Error("Something went wrong !");
+  }
+};
+
+const formData = async (url, body) => {
+  try {
+    const response = await instance.post(url, body, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    if (
+      error.response &&
+      error.response.status >= 400 &&
+      error.response.status < 500
+    )
+      return new Error(error.response.data.error);
+    return new Error("Something went wrong !");
+  }
+};
+
+const Http = { post, get, formData };
+
+export default Http;

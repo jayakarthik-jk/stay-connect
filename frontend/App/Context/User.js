@@ -15,7 +15,6 @@ export const UserContextProvider = ({ children }) => {
   useEffect(() => {
     async function fetchUser() {
       const status = await Backend.isloggedIn();
-      console.log(status);
       if (status instanceof Error) return;
       if (!status.isLoggedIn) return;
       setUser(status.user);

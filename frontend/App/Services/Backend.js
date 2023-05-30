@@ -38,11 +38,11 @@ const register = async (email, name, password) => {
   }
 };
 
-async function getConversations(id) {
+function getConversations(id) {
   return Http.get(`/users/conversations`);
 }
 
-async function getMessages(conversationId) {
+function getMessages(conversationId) {
   return Http.get(`/conversations/${conversationId}/messages`);
 }
 
@@ -54,6 +54,22 @@ function isloggedIn() {
   return Http.get("/users/me");
 }
 
+function getMyPosts() {
+  return Http.get("/users/posts");
+}
+
+function getMyFriendPosts() {
+  return Http.get("/users/posts/friends");
+}
+
+function uploadPost(body) {
+  return Http.formData("/users/posts", body);
+}
+
+function updateProfile(body) {
+  return Http.formData("/users/profile", body);
+}
+
 export default {
   login,
   register,
@@ -61,4 +77,8 @@ export default {
   getMessages,
   makeConversation,
   isloggedIn,
+  getMyPosts,
+  getMyFriendPosts,
+  uploadPost,
+  updateProfile,
 };

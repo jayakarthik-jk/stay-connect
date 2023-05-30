@@ -15,7 +15,7 @@ function InfoSection({ postCount, viewsCount }) {
       <View style={styles.infoContainer}>
         <Text style={styles.infoname}>{user.name}</Text>
       </View>
-      <View style={[styles.statsContainer, background]}>
+      {/* <View style={[styles.statsContainer, background]}>
         <View style={styles.countContainer}>
           <Text style={styles.statsValue}>{postCount}</Text>
           <Text style={styles.statsLabel}>Posts</Text>
@@ -24,7 +24,7 @@ function InfoSection({ postCount, viewsCount }) {
           <Text style={styles.statsValue}>{viewsCount}</Text>
           <Text style={styles.statsLabel}>Views</Text>
         </View>
-      </View>
+      </View> */}
     </View>
   );
 }

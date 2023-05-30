@@ -2,6 +2,7 @@ import { Router } from "express";
 import db from "../database";
 import auth from "../middleware/auth";
 import profile from "./profile";
+import posts from "./posts";
 
 const router = Router();
 
@@ -21,5 +22,6 @@ router.get("/conversations", auth, async (req, res) => {
 });
 
 router.use("/profile", profile);
+router.use("/posts", posts);
 
 export default router;

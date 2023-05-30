@@ -1,18 +1,49 @@
-import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { useState, useEffect } from "react";
+import { StyleSheet, View, useWindowDimensions, Image } from "react-native";
 
 import useDynamicColors from "../../Hooks/useDynamicColors";
 import Text from "../Common/Text";
+import List from "../Common/List";
+
+import { BACKEND_URL } from "../../Services/Http";
+import Backend from "../../Services/Backend";
 
 function PostSection() {
+  const [posts, setPosts] = useState([]);
   const { background } = useDynamicColors();
-  const [userPost, setUserPost] = useState([]);
+  const window = useWindowDimensions();
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const posts = await Backend.getMyPosts();
+      if (posts instanceof Error) return alert("unable to fetch posts");
+      const updatedPosts = posts.map((post) => ({
+        id: post,
+        uri: BACKEND_URL + "/" + post,
+        width: window.width / 2,
+        height: 200,
+      }));
+      setPosts(updatedPosts);
+    };
+    fetchPosts();
+  }, []);
   return (
     <View style={[styles.postSection, background]}>
-      {userPost.length === 0 ? <Text>No posts yet</Text> : ""}
+      {posts.length <= 0 ? (
+        <View style={styles.errorMessageContainer}>
+          <Text style={styles.errorMessage}>No posts found</Text>
+        </View>
+      ) : (
+        <List Component={Post} data={posts} numColumns={2} />
+      )}
     </View>
   );
 }
+
+const Post = ({ uri, width, height }) => (
+  <View>
+    <Image source={{ uri, width, height }} />
+  </View>
+);
 
 const styles = StyleSheet.create({
   postSection: {

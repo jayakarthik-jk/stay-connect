@@ -24,7 +24,7 @@ async function getUserByEmail(
 function initSocket(httpServer: any) {
   const io = new Server(httpServer);
 
-  io.on("connection", async (socket) => {
+  io.on("connection", async (socket: any) => {
     const email = socket.handshake.query.email as string;
 
     if (!email) return socket.disconnect();
@@ -62,7 +62,7 @@ function initSocket(httpServer: any) {
     //   );
     // });
   });
-  io.on("error", (error) => {
+  io.on("error", (error: any) => {
     console.error("Socket error:", error);
   });
 }

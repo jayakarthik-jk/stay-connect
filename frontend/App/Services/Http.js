@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 
-export const BACKEND_URL = "http://192.168.47.59:3001";
+export const BACKEND_URL = "https://stay-connect-backend.onrender.com";
 
 const instance = axios.create({
   baseURL: BACKEND_URL,
